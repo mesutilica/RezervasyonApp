@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RezervasyonApp.Data;
 using RezervasyonApp.Entities;
+using RezervasyonApp.Tools;
 
 namespace RezervasyonApp.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class SlidersController : Controller
     {
         private readonly DatabaseContext _context;
@@ -48,10 +50,14 @@ namespace RezervasyonApp.Areas.Admin.Controllers
         // POST: Admin/Sliders/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Slider slider)
+        public async Task<IActionResult> Create(Slider slider, IFormFile? Image)
         {
             if (ModelState.IsValid)
             {
+                if (Image is not null)
+                {
+                    slider.Image = FileHelper.FileLoader(Image);
+                }
                 _context.Add(slider);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -78,7 +84,7 @@ namespace RezervasyonApp.Areas.Admin.Controllers
         // POST: Admin/Sliders/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Slider slider)
+        public async Task<IActionResult> Edit(int id, Slider slider, IFormFile? Image)
         {
             if (id != slider.Id)
             {
@@ -89,6 +95,10 @@ namespace RezervasyonApp.Areas.Admin.Controllers
             {
                 try
                 {
+                    if (Image is not null)
+                    {
+                        slider.Image = FileHelper.FileLoader(Image);
+                    }
                     _context.Update(slider);
                     await _context.SaveChangesAsync();
                 }

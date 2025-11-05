@@ -42,7 +42,16 @@
                     @Html.DisplayFor(modelItem => item.CreateDate)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Image)
+                    @if (!string.IsNullOrEmpty(item.Image))
+                    {
+                        <a href="/Images/@item.Image">
+                            <img src="~/Images/@item.Image" height="34" />
+                        </a>
+                    }
+                    else
+                    {
+                        <i class="far fa-image"></i>
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.IsActive)

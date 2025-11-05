@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RezervasyonApp.Data;
 using RezervasyonApp.Entities;
+using RezervasyonApp.Tools;
 
 namespace RezervasyonApp.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class ServicesController : Controller
     {
         private readonly DatabaseContext _context;
@@ -48,10 +50,14 @@ namespace RezervasyonApp.Areas.Admin.Controllers
         // POST: Admin/Services/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Service service)
+        public async Task<IActionResult> Create(Service service, IFormFile? Image)
         {
             if (ModelState.IsValid)
             {
+                if (Image is not null)
+                {
+                    service.Image = FileHelper.FileLoader(Image);
+                }
                 _context.Add(service);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -78,7 +84,7 @@ namespace RezervasyonApp.Areas.Admin.Controllers
         // POST: Admin/Services/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Service service)
+        public async Task<IActionResult> Edit(int id, Service service, IFormFile? Image)
         {
             if (id != service.Id)
             {
@@ -89,6 +95,10 @@ namespace RezervasyonApp.Areas.Admin.Controllers
             {
                 try
                 {
+                    if (Image is not null)
+                    {
+                        service.Image = FileHelper.FileLoader(Image);
+                    }
                     _context.Update(service);
                     await _context.SaveChangesAsync();
                 }

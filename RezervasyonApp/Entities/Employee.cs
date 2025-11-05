@@ -16,7 +16,8 @@ namespace RezervasyonApp.Entities
         [Display(Name = "Aktif?")]
         public bool IsActive { get; set; }
         [Display(Name = "Eklenme Tarihi"), ScaffoldColumn(false)]
-        public DateTime CreateDate { get; set; }
-        public Guid? UserGuid { get; set; }
+        public DateTime CreateDate { get; set; } = DateTime.Now;
+        [ScaffoldColumn(false)]
+        public Guid? UserGuid { get; set; } = Guid.NewGuid();
     }
 }

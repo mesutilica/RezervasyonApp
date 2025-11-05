@@ -1,13 +1,10 @@
-﻿@model RezervasyonApp.Entities.Customer
+﻿@model Customer
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Müşteri Detay";
 }
 
-<h1>Details</h1>
-
 <div>
-    <h4>Customer</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -49,6 +46,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">Düzenle</a> |
+    <a asp-action="Index" class="btn btn-outline-info">Listeye Dön</a>
 </div>

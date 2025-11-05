@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RezervasyonApp.Data;
 using RezervasyonApp.Entities;
 
 namespace RezervasyonApp.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    [Area("Admin"), Authorize]
     public class UsersController : Controller
     {
         private readonly DatabaseContext _context;
