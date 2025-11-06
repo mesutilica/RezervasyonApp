@@ -1,5 +1,6 @@
 using RezervasyonApp.Data;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace RezervasyonApp
 {
@@ -15,6 +16,8 @@ namespace RezervasyonApp
             builder.Services.AddSession();
 
             builder.Services.AddDbContext<DatabaseContext>();
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
             builder.Services.AddAuthorization(x =>
             {
@@ -39,6 +42,7 @@ namespace RezervasyonApp
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
