@@ -6,13 +6,18 @@
     </a>
 
     <ul class="dropdown-menu">
-        @foreach (var category in Model)
+        @foreach (var item in Model)
         {
             <li>
-                <a class="dropdown-item" asp-controller="Categories" asp-action="Index" asp-route-id="@category.Id">
-                    @category.Name
+                <a class="dropdown-item" asp-controller="Services" asp-action="Details" asp-route-id="@item.Id">
+                    @item.Name
                 </a>
             </li>
         }
+        <li>
+            <a class="dropdown-item" asp-controller="Services" asp-action="Index">
+                Tüm Hizmetlerimiz
+            </a>
+        </li>
     </ul>
 </li>

@@ -21,5 +21,8 @@ namespace RezervasyonApp.Entities
         public DateTime CreateDate { get; set; } = DateTime.Now;
         [ScaffoldColumn(false)]
         public Guid? UserGuid { get; set; } = Guid.NewGuid();
+        [ScaffoldColumn(false)]
+        [Display(Name = "Kullanıcı Tipi")]
+        public UserType UserType { get; set; } = UserType.None;
     }
 }

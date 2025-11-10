@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RezervasyonApp.Data;
 using RezervasyonApp.Entities;
@@ -43,6 +44,7 @@ namespace RezervasyonApp.Areas.Admin.Controllers
         // GET: Admin/Users/Create
         public IActionResult Create()
         {
+            ViewBag.UserTypes = new SelectList(Enum.GetValues<UserType>());
             return View();
         }
 
@@ -57,6 +59,7 @@ namespace RezervasyonApp.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.UserTypes = new SelectList(Enum.GetValues<UserType>());
             return View(user);
         }
 
@@ -73,6 +76,7 @@ namespace RezervasyonApp.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+            ViewBag.UserTypes = new SelectList(Enum.GetValues<UserType>());
             return View(user);
         }
 
@@ -106,6 +110,7 @@ namespace RezervasyonApp.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.UserTypes = new SelectList(Enum.GetValues<UserType>());
             return View(user);
         }
 

@@ -12,9 +12,9 @@ namespace RezervasyonApp.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string q = "")
         {
-            return View(_context.Services);
+            return View(_context.Services.Where(x => x.IsActive && x.Name.Contains(q)).ToList());
         }
         public IActionResult Details(int? id)
         {

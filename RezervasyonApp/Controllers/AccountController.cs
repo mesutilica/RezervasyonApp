@@ -30,8 +30,10 @@ namespace RezervasyonApp.Controllers
             {
                 var haklar = new List<Claim>() // kullanıcı hakları tanımladık
                     {
+                        new(ClaimTypes.Name, kullanici.Name + " " + kullanici.Surname),
                         new(ClaimTypes.Email, kullanici.Email), // claim = hak(kullanıcıya tanımlalan haklar)
-                        new(ClaimTypes.Role, kullanici.IsAdmin ? "Admin" : "User") // giriş yapan kullanıcı admin ise admin yetkisiyle değilse user yetkisiyle giriş yasın.
+                        new(ClaimTypes.Role, kullanici.IsAdmin ? "Admin" : "User"), // giriş yapan kullanıcı admin ise admin yetkisiyle değilse user yetkisiyle giriş yasın.
+                        new(ClaimTypes.UserData, kullanici.UserGuid.Value.ToString())
                     };
                 var kullaniciKimligi = new ClaimsIdentity(haklar, "Login"); // kullanıcı için bir kimlik oluşturduk
                 ClaimsPrincipal claimsPrincipal = new(kullaniciKimligi);
@@ -69,6 +71,7 @@ namespace RezervasyonApp.Controllers
                 {
                     user.IsActive = true;
                     user.IsAdmin = false;
+                    user.UserType = UserType.Customer;
                     _context.Users.Add(user);
                     _context.SaveChanges();
                     TempData["Message"] = @"<div class=""alert alert-success alert-dismissible fade show"" role=""alert"">
