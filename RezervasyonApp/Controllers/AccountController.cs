@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RezervasyonApp.Data;
 using RezervasyonApp.Entities;
 using System.Security.Claims;
@@ -14,8 +16,40 @@ namespace RezervasyonApp.Controllers
         {
             _context = context;
         }
+        [Authorize]
         public IActionResult Index()
         {
+            var userId = User.FindFirst(ClaimTypes.Sid)?.Value;
+            if (userId is null) // eğer sid değerine ulaşamazsak
+            {
+                HttpContext.SignOutAsync(); // oturumu kapat
+                return RedirectToAction("Login", "Account"); // logine yönlendir
+            }
+            var model = _context.Users.Find(Convert.ToInt32(userId));
+            if (model == null)
+            {
+                HttpContext.SignOutAsync(); // oturumu kapat
+                return RedirectToAction("Login", "Account"); // logine yönlendir
+            }
+            return View(model);
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> IndexAsync(User user)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(user);
+                    await _context.SaveChangesAsync();
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Kayıt sırasında bir hata oluştu!");
+                }
+                return RedirectToAction(nameof(Index));
+            }
             return View();
         }
         public IActionResult Login()
@@ -23,13 +57,14 @@ namespace RezervasyonApp.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Login(string email, string password)
+        public IActionResult Login(string email, string password, string ReturnUrl)
         {
             var kullanici = _context.Users.FirstOrDefault(u => u.Email == email && u.Password == password && u.IsActive);
             if (kullanici != null)
             {
                 var haklar = new List<Claim>() // kullanıcı hakları tanımladık
                     {
+                        new(ClaimTypes.Sid, kullanici.Id.ToString()),
                         new(ClaimTypes.Name, kullanici.Name + " " + kullanici.Surname),
                         new(ClaimTypes.Email, kullanici.Email), // claim = hak(kullanıcıya tanımlalan haklar)
                         new(ClaimTypes.Role, kullanici.IsAdmin ? "Admin" : "User"), // giriş yapan kullanıcı admin ise admin yetkisiyle değilse user yetkisiyle giriş yasın.
@@ -38,6 +73,10 @@ namespace RezervasyonApp.Controllers
                 var kullaniciKimligi = new ClaimsIdentity(haklar, "Login"); // kullanıcı için bir kimlik oluşturduk
                 ClaimsPrincipal claimsPrincipal = new(kullaniciKimligi);
                 HttpContext.SignInAsync(claimsPrincipal); // yukardaki yetkilerle sisteme giriş yaptık
+                if (!string.IsNullOrEmpty(ReturnUrl))
+                {
+                    return Redirect(ReturnUrl);
+                }
                 return RedirectToAction("Index", "Home");
             }
             else

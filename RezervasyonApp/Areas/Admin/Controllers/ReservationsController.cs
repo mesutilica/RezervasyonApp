@@ -20,7 +20,7 @@ namespace RezervasyonApp.Areas.Admin.Controllers
         // GET: Admin/Reservations
         public async Task<IActionResult> Index()
         {
-            var databaseContext = _context.Reservations.Include(r => r.Customer).Include(r => r.Employee).Include(r => r.User);
+            var databaseContext = _context.Reservations.Include(r => r.Employee).Include(r => r.User);
             return View(await databaseContext.ToListAsync());
         }
 
@@ -33,7 +33,6 @@ namespace RezervasyonApp.Areas.Admin.Controllers
             }
 
             var reservation = await _context.Reservations
-                .Include(r => r.Customer)
                 .Include(r => r.Employee)
                 .Include(r => r.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -48,7 +47,6 @@ namespace RezervasyonApp.Areas.Admin.Controllers
         // GET: Admin/Reservations/Create
         public IActionResult Create()
         {
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Email");
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Email");
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
             return View();
@@ -65,7 +63,6 @@ namespace RezervasyonApp.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Email", reservation.CustomerId);
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Email", reservation.EmployeeId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", reservation.UserId);
             return View(reservation);
@@ -84,7 +81,6 @@ namespace RezervasyonApp.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Email", reservation.CustomerId);
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Email", reservation.EmployeeId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", reservation.UserId);
             return View(reservation);
@@ -120,7 +116,6 @@ namespace RezervasyonApp.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Email", reservation.CustomerId);
             ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Email", reservation.EmployeeId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", reservation.UserId);
             return View(reservation);
@@ -135,7 +130,6 @@ namespace RezervasyonApp.Areas.Admin.Controllers
             }
 
             var reservation = await _context.Reservations
-                .Include(r => r.Customer)
                 .Include(r => r.Employee)
                 .Include(r => r.User)
                 .FirstOrDefaultAsync(m => m.Id == id);

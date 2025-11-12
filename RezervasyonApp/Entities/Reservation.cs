@@ -9,8 +9,6 @@ namespace RezervasyonApp.Entities
         public int UserId { get; set; }
         [Display(Name = "Uzman")]
         public int EmployeeId { get; set; }
-        [Display(Name = "Müşteri")]
-        public int CustomerId { get; set; }
         [Display(Name = "Randevu Başlangıç Tarihi")]
         public DateTime StartDate { get; set; }
         [Display(Name = "Randevu Bitiş Tarihi")]
@@ -19,7 +17,5 @@ namespace RezervasyonApp.Entities
         public User? User { get; set; }
         [Display(Name = "Uzman")]
         public Employee? Employee { get; set; }
-        [Display(Name = "Müşteri")]
-        public Customer? Customer { get; set; }
     }
 }
